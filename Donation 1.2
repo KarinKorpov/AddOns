@@ -1,0 +1,132 @@
+//   Tip Jar Script Implementation
+//
+//   Copyright (C) Allister Beerbaum - Brad Henry <j0j0@riod.ca> 2007
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation; either version 3 of the License, or
+//   (at your option) any later version.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+// global constants 
+//string CUSTOM_TEXT = "Secret Times";
+
+list DEFAULT_QUICK_PAY_AMOUNTS = [25, 50, 100, 250];
+
+integer DEFAULT_PRICE = PAY_DEFAULT;
+
+string DEFAULT_DONOR = "<nobody>";
+
+float PARTICLE_EFFECT_TIMER = 6.0;
+
+vector PARTICLE_EFFECT_COLOUR = <0.0, 1.0, 0.0>;
+
+vector FLOATING_TEXT_COLOUR = <1.0, 1.0, 0.0>;
+
+// global variables
+
+integer last_donation = 0;
+integer total_donations = 0;
+
+key last_donor = NULL_KEY;
+
+write_floating_text()
+{
+    string donor = DEFAULT_DONOR;
+    
+    if (last_donor != NULL_KEY)
+    {
+        donor = llGetDisplayName(last_donor);
+    }
+
+    list details = llGetParcelDetails(llGetPos(), [PARCEL_DETAILS_NAME]);
+    llSetText(llList2String(details ,0)+  
+        " donation box\n" +
+        "Last donation: L$" +
+        (string)last_donation + 
+        " by " + donor + ".\n" +
+        "Total donations: L$" +
+        (string)total_donations + ".\n",
+        FLOATING_TEXT_COLOUR,1.0
+        );
+}
+
+enable_particle_effect()
+{
+
+            llParticleSystem( 
+           [PSYS_PART_FLAGS,             PSYS_PART_EMISSIVE_MASK,
+           PSYS_SRC_PATTERN,            PSYS_SRC_PATTERN_ANGLE, 
+           PSYS_PART_START_COLOR,       PARTICLE_EFFECT_COLOUR,
+           PSYS_SRC_ANGLE_BEGIN,        (DEG_TO_RAD * -1),
+           PSYS_SRC_ANGLE_END,          (DEG_TO_RAD * 1),
+           PSYS_SRC_BURST_RATE,         0.0,
+           PSYS_SRC_BURST_PART_COUNT,   1,
+           PSYS_PART_MAX_AGE,           0.4
+          ] );
+        llTargetOmega(<0.0,0,0.10>,PI,1.0);
+}
+
+disable_particle_effect()
+{
+    llTargetOmega(<0.0,0,0.10>,PI,1.0);
+    llParticleSystem([]);
+}
+
+default
+{
+    on_rez(integer start_param)
+    {
+        llResetScript();
+    }
+
+    state_entry()
+    {
+        list details = llGetParcelDetails(llGetPos(), [PARCEL_DETAILS_NAME]);
+        llInstantMessage(llGetOwner(),"Tip Jar at " + llList2String(details ,0)+ " is initializing.");
+        llSetPayPrice(DEFAULT_PRICE, DEFAULT_QUICK_PAY_AMOUNTS);
+        write_floating_text();
+        llInstantMessage(llGetOwner(),"The Tip Jar is now ready");        
+    }
+
+    money(key id, integer amount)
+    {
+        list details = llGetParcelDetails(llGetPos(), [PARCEL_DETAILS_NAME]);
+        last_donor = id;
+        last_donation = amount;
+        total_donations += amount;
+        llInstantMessage(id, "Thank you for the donation " + llGetDisplayName(last_donor) + " from L$" +(string)last_donation +" to " + llList2String(details ,0)+ "!");
+        llInstantMessage(llGetOwner(),"Tip Jar at " + llList2String(details ,0)+ " was paid L$" +
+                    (string)last_donation +
+                    " by " + llGetDisplayName(last_donor)+ " (" +llKey2Name(last_donor)+ 
+                    "). Total donations are now: L$" +(string)total_donations + ".");
+        write_floating_text();
+        disable_particle_effect();
+    }
+    
+  
+    link_message(integer Sender, integer Number, string Text, key ID)
+    {  //When this prim receives a message, say to the owner what it received.
+        if (Text == "reset")
+            {
+                llResetScript();
+            }
+    }
+
+         
+
+    timer()
+    {
+        disable_particle_effect();
+        llSetTimerEvent(0.0);
+    }
+}
