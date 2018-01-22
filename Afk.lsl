@@ -14,9 +14,6 @@ integer idleness = 1;
 integer public =0;
 string owner;               // owner from the object, set in attach
 
-string noclothes ="@attachallthis:#AV/Clothing=n";
-string clothes ="@attachallthis:#AV/Clothing=y";
-
 //Functions
 doBlink() {
         if (idleness==0){
