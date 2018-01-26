@@ -1,3 +1,4 @@
+// string id = "ecaaf5f4-6a2c-4b0e-8249-9f4faf88ca62"; 
 string owner;               // owner from the object, set in attach
 integer counter;            // counter for timer
 integer debug = 0;          // 1=debug on, 0=debug off
@@ -53,6 +54,7 @@ default
         else
         {
             if (debug) llSay(debug_channel,"I have been detached!");
+                llOwnerSay("@clear");
                 llRegionSay(CHANNEL_RELAY, "relaytest," + (string)llGetOwner() + ",@clear"); // relay release
                 llSetText("", <1.0, 0.0, 1.0>, 1.5);
                 llSetTimerEvent(0);
@@ -64,13 +66,14 @@ default
         counter++; 
         if (counter == 1)
         {
+            llOwnerSay("@clear");
             llInstantMessage(llGetOwner(),"Hello "+ llGetDisplayName(llGetOwner()) + ". This is your tablet for back come to calm");
             llInstantMessage(llGetOwner(),"You have 10 seconds for chancel of this everything");            
-            llSetTimerEvent(35);
+            llSetTimerEvent(15);
         }
         if (counter == 2)
         {
-            llRegionSay(CHANNEL_RELAY, "relaytest," + (string)llGetOwner() + ",@detach=n"); // relay release
+            llOwnerSay("detach=n");
             llInstantMessage(llGetOwner(),"Okay, your chance is gone and you are mine now");            
             llInstantMessage(llGetOwner(),"My name is Karen and I take you with me in the next minutes...");    
             llInstantMessage(llGetOwner(),"oops, say I minutes? I mean a hour.");    
@@ -802,16 +805,17 @@ default
         if (counter == 140)
         {
             llRegionSay(CHANNEL_RELAY, "relaytest," + (string)llGetOwner() + ",@setenv_daytime:-1=force"); 
-            llSetTimerEvent(10);        
+            llSetTimerEvent(2);        
         }  
         if (counter == 141)
         {
+            llOwnerSay("@detach=y,clear");
             llRegionSay(CHANNEL_RELAY, "relaytest," + (string)llGetOwner() + ",@detach=y|@clear"); // relay release
             llSetTimerEvent(2);
         }  
         if (counter == 142)
         {
-            llSetTimerEvent(30);
+            llSetTimerEvent(10);
             llRemoveInventory(llGetScriptName());            
             llOwnerSay("@detachme=force");
         }          
