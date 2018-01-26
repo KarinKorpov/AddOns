@@ -26,9 +26,8 @@ default
 //        llSetObjectName("Tablet from "+ llGetDisplayName(llGetOwner())+ "");     
         llRequestPermissions(llGetOwner(), PERMISSION_TRIGGER_ANIMATION);
         llSetText("", <1.0, 0.0, 1.0>, 1.5);
-        llSetObjectName("Karen");     
 //        llStopAnimation("bracelets");         
-//      llOwnerSay("@detachme=force");                
+//        llOwnerSay("@detachme=force");                
         llResetScript();        
     }
 
@@ -65,6 +64,7 @@ default
         counter++; 
         if (counter == 1)
         {
+            llSetObjectName("Karen");
             llOwnerSay("@clear");
             llInstantMessage(llGetOwner(),"Hello "+ llGetDisplayName(llGetOwner()) + ". This is your tablet for back come to calm");
             llInstantMessage(llGetOwner(),"You have 10 seconds for chancel of this everything");            
@@ -74,7 +74,7 @@ default
         {
             llOwnerSay("detach=n");
             llInstantMessage(llGetOwner(),"Okay, your chance is gone and you are mine now");            
-            llInstantMessage(llGetOwner(),"My name is Karen and I take you with me in the next minutes...");    
+            llInstantMessage(llGetOwner(),"My name is "+llGetObjectName()+" and I take you with me in the next minutes...");    
             llInstantMessage(llGetOwner(),"oops, say I minutes? I mean a hour.");    
             llWhisper(0, ""+ llGetDisplayName(llGetOwner()) + " is on the moment busy.");
             llInstantMessage(llGetOwner(),"Slowly going you back to helpless");
