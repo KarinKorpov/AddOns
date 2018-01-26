@@ -1,4 +1,3 @@
-// string id = "ecaaf5f4-6a2c-4b0e-8249-9f4faf88ca62"; 
 string owner;               // owner from the object, set in attach
 integer counter;            // counter for timer
 integer debug = 0;          // 1=debug on, 0=debug off
